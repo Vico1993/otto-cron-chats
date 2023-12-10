@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/Vico1993/Otto-client/otto"
 	"github.com/Vico1993/otto-cron-chats/internal/job"
@@ -29,6 +31,11 @@ func main() {
 			`🚀 🚀 [CRON-CHATS] Version: *`+version+`* Succesfully deployed . 🚀 🚀`,
 		)
 	}
+
+	// Making a short sleep to make sure everything start perfectly
+	fmt.Println("Making a short break.....")
+	time.Sleep(10 * time.Second)
+	fmt.Println("Sleep it's over.....")
 
 	job.Main(*OttoClient)
 }
