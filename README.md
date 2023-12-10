@@ -26,6 +26,19 @@ cd otto-cron-chats
 Make sure you have the following tools installed on your machine:
 
 -   Go (at least version 1.20)
+-   A valid Telegram bot:
+    -   look at the great [bot father](https://core.telegram.org/bots)
+-   Setup an `.env` file
+
+```sh
+# Bot token given by the @BotFather
+TELEGRAM_BOT_TOKEN=<TELEGRAM_BOT>
+# Optional value, to receive notification when deployed
+TELEGRAM_ADMIN_CHAT_ID=<TELEGRAM_ADMIN_CHAT_ID>
+
+# Api url for the Otto api
+OTTO_API_URL=<OTTO_API_URL>
+```
 
 ## Installing
 
