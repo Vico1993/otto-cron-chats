@@ -1,6 +1,6 @@
 module github.com/Vico1993/otto-cron-chats
 
-go 1.21.0
+go 1.21
 
 require (
 	github.com/Vico1993/Otto-client v1.3.2
