@@ -19,8 +19,6 @@ var (
 func Main(client otto.Client) {
 	chats := client.Chat.ListAll()
 
-	fmt.Println(chats)
-
 	if len(chats) == 0 {
 		fmt.Println("No chats retrieved from API")
 		return
@@ -56,8 +54,7 @@ func Main(client otto.Client) {
 			when := delay * n
 			fmt.Println("Adding Job -> " + chat.TelegramChatId + " threadId -> " + chat.TelegramThreadId)
 			_, err := Scheduler.Every(2).
-				// Hour().
-				Minute().
+				Hour().
 				Tag(chatsTag).
 				StartAt(time.Now().Add(time.Duration(when) * time.Minute)).
 				Do(func() {
