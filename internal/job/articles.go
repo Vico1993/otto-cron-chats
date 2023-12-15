@@ -1,9 +1,7 @@
 package job
 
 import (
-	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
 
 	textrank "github.com/DavidBelicza/TextRank/v2"
@@ -69,11 +67,6 @@ func match(articles []otto.Article) []Topic {
 // Notify user based on list of topic
 func notify(articles []otto.Article, chat otto.Chat) {
 	topics := match(articles)
-
-	if len(topics) == 0 {
-		fmt.Println("No topic found")
-		fmt.Println("Number of articles: " + strconv.Itoa(len(articles)))
-	}
 
 	telegram.TelegramUpdateTyping(chat.TelegramChatId, true)
 	for _, topic := range topics {
