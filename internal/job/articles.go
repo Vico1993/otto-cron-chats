@@ -42,7 +42,6 @@ func fetch(articles []otto.Article, chat otto.Chat) {
 			host = u.Host
 		}
 
-		fmt.Println("send", host)
 		telegram.TelegramPostMessage(
 			chat.TelegramChatId,
 			chat.TelegramThreadId,
@@ -94,6 +93,21 @@ func match(articles []otto.Article) []Topic {
 	}
 
 	return matchs
+}
+
+// Notify user based on list of topic
+func notify(topics []Topic, chat otto.Chat) {
+	telegram.TelegramUpdateTyping(chat.TelegramChatId, true)
+	for _, topic := range topics {
+		topic := topic
+
+		telegram.TelegramPostMessage(
+			chat.TelegramChatId,
+			chat.TelegramThreadId,
+			buildMessageFromTopic(topic),
+		)
+	}
+	telegram.TelegramUpdateTyping(chat.TelegramChatId, false)
 }
 
 // JaccardSimilarity, as known as the Jaccard Index, compares the similarity of sample sets.
