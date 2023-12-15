@@ -96,19 +96,19 @@ func match(articles []otto.Article) []Topic {
 }
 
 // Notify user based on list of topic
-func notify(topics []Topic, chat otto.Chat) {
-	telegram.TelegramUpdateTyping(chat.TelegramChatId, true)
-	for _, topic := range topics {
-		topic := topic
+// func notify(topics []Topic, chat otto.Chat) {
+// 	telegram.TelegramUpdateTyping(chat.TelegramChatId, true)
+// 	for _, topic := range topics {
+// 		topic := topic
 
-		telegram.TelegramPostMessage(
-			chat.TelegramChatId,
-			chat.TelegramThreadId,
-			buildMessageFromTopic(topic),
-		)
-	}
-	telegram.TelegramUpdateTyping(chat.TelegramChatId, false)
-}
+// 		telegram.TelegramPostMessage(
+// 			chat.TelegramChatId,
+// 			chat.TelegramThreadId,
+// 			buildMessageFromTopic(topic),
+// 		)
+// 	}
+// 	telegram.TelegramUpdateTyping(chat.TelegramChatId, false)
+// }
 
 // JaccardSimilarity, as known as the Jaccard Index, compares the similarity of sample sets.
 // This doesn't measure similarity between texts, but if regarding a text as bag-of-word,
