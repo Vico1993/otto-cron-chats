@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFetch1Article(t *testing.T) {
+func TestNotify1Article(t *testing.T) {
 	article := otto.Article{
 		Id:     uuid.New().String(),
 		FeedId: uuid.New().String(),
@@ -36,14 +36,14 @@ func TestFetch1Article(t *testing.T) {
 	mockTelegramService.On("TelegramUpdateTyping", chat.TelegramChatId, false).Return()
 	mockTelegramService.On("TelegramPostMessage", chat.TelegramChatId, "", "MESSAGE").Return()
 
-	fetch([]otto.Article{article}, chat)
+	notify([]otto.Article{article}, chat)
 
 	mockTelegramService.AssertCalled(t, "TelegramUpdateTyping", chat.TelegramChatId, true)
 	mockTelegramService.AssertCalled(t, "TelegramUpdateTyping", chat.TelegramChatId, false)
 	mockTelegramService.AssertCalled(t, "TelegramPostMessage", chat.TelegramChatId, "", "MESSAGE")
 }
 
-func TestFetch1ArticleButWithThreadId(t *testing.T) {
+func TestNotify1ArticleButWithThreadId(t *testing.T) {
 	article := otto.Article{
 		Id:     uuid.New().String(),
 		FeedId: uuid.New().String(),
@@ -70,7 +70,7 @@ func TestFetch1ArticleButWithThreadId(t *testing.T) {
 	mockTelegramService.On("TelegramUpdateTyping", chat.TelegramChatId, false).Return()
 	mockTelegramService.On("TelegramPostMessage", chat.TelegramChatId, threadId, "MESSAGE").Return()
 
-	fetch([]otto.Article{article}, chat)
+	notify([]otto.Article{article}, chat)
 
 	mockTelegramService.AssertCalled(t, "TelegramUpdateTyping", chat.TelegramChatId, true)
 	mockTelegramService.AssertCalled(t, "TelegramUpdateTyping", chat.TelegramChatId, false)
@@ -138,4 +138,47 @@ func TestMatch2ArticlesDifferentTopic(t *testing.T) {
 	assert.Len(t, res, 2, "Should have only 2 topics")
 	assert.Equal(t, res[0].Subject, article1.Title, "Subject of topic 1 should be equal to the title of the first article")
 	assert.Equal(t, res[1].Subject, article2.Title, "Subject of topic 2 should be equal to the title of the second article")
+}
+
+func TestNotifyWithTopicMultipleArticle(t *testing.T) {
+	article1 := otto.Article{
+		Id:     uuid.New().String(),
+		FeedId: uuid.New().String(),
+		Title:  "Super Title",
+		Source: "Title",
+		Author: "Unknown",
+		Link:   "https://super.com/title",
+		Tags:   []string{"tag1", "tag2"},
+	}
+
+	article2 := otto.Article{
+		Id:     uuid.New().String(),
+		FeedId: uuid.New().String(),
+		Title:  "Super Title 2",
+		Source: "Title",
+		Author: "Unknown",
+		Link:   "https://super.com/title",
+		Tags:   []string{"tag1", "tag2"},
+	}
+
+	chat := otto.Chat{
+		Id:               "12",
+		TelegramChatId:   "12314",
+		TelegramThreadId: "",
+		Tags:             []string{"tag2"},
+	}
+
+	topicTemplates = []string{"MESSAGE with TOPIC"}
+
+	mockTelegramService := new(service.MocksTelegramService)
+	telegram = mockTelegramService
+	mockTelegramService.On("TelegramUpdateTyping", chat.TelegramChatId, true).Return()
+	mockTelegramService.On("TelegramUpdateTyping", chat.TelegramChatId, false).Return()
+	mockTelegramService.On("TelegramPostMessage", chat.TelegramChatId, "", "MESSAGE with TOPIC").Return()
+
+	notify([]otto.Article{article1, article2}, chat)
+
+	mockTelegramService.AssertCalled(t, "TelegramUpdateTyping", chat.TelegramChatId, true)
+	mockTelegramService.AssertCalled(t, "TelegramUpdateTyping", chat.TelegramChatId, false)
+	mockTelegramService.AssertCalled(t, "TelegramPostMessage", chat.TelegramChatId, "", "MESSAGE with TOPIC")
 }

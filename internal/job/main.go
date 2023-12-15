@@ -63,7 +63,7 @@ func Main(client otto.Client) {
 					articles := client.Chat.ListLatestArticles(chat.TelegramChatId, chat.TelegramThreadId)
 
 					if len(articles) > 0 {
-						fetch(articles, chat)
+						notify(articles, chat)
 					}
 
 					// Update the time parsed

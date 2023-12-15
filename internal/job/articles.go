@@ -28,35 +28,6 @@ type Topic struct {
 	Articles []otto.Article
 }
 
-// Fetch all articles
-func fetch(articles []otto.Article, chat otto.Chat) {
-	fmt.Println("Articles found:" + strconv.Itoa(len(articles)))
-
-	telegram.TelegramUpdateTyping(chat.TelegramChatId, true)
-	for _, article := range articles {
-		article := article
-
-		host := article.Source
-		u, err := url.Parse(article.Source)
-		if err == nil {
-			host = u.Host
-		}
-
-		telegram.TelegramPostMessage(
-			chat.TelegramChatId,
-			chat.TelegramThreadId,
-			buildMessage(
-				article.Title,
-				host,
-				article.Author,
-				article.Tags,
-				article.Link,
-			),
-		)
-	}
-	telegram.TelegramUpdateTyping(chat.TelegramChatId, false)
-}
-
 // Match articles together
 func match(articles []otto.Article) []Topic {
 	matchs := []Topic{}
@@ -96,19 +67,44 @@ func match(articles []otto.Article) []Topic {
 }
 
 // Notify user based on list of topic
-// func notify(topics []Topic, chat otto.Chat) {
-// 	telegram.TelegramUpdateTyping(chat.TelegramChatId, true)
-// 	for _, topic := range topics {
-// 		topic := topic
+func notify(articles []otto.Article, chat otto.Chat) {
+	topics := match(articles)
 
-// 		telegram.TelegramPostMessage(
-// 			chat.TelegramChatId,
-// 			chat.TelegramThreadId,
-// 			buildMessageFromTopic(topic),
-// 		)
-// 	}
-// 	telegram.TelegramUpdateTyping(chat.TelegramChatId, false)
-// }
+	if len(topics) == 0 {
+		fmt.Println("No topic found")
+		fmt.Println("Number of articles: " + strconv.Itoa(len(articles)))
+	}
+
+	telegram.TelegramUpdateTyping(chat.TelegramChatId, true)
+	for _, topic := range topics {
+		topic := topic
+
+		message := buildMessageFromTopic(topic)
+		if len(topic.Articles) == 1 {
+			article := topic.Articles[0]
+			host := article.Source
+			u, err := url.Parse(article.Source)
+			if err == nil {
+				host = u.Host
+			}
+
+			message = buildMessage(
+				article.Title,
+				host,
+				article.Author,
+				article.Tags,
+				article.Link,
+			)
+		}
+
+		telegram.TelegramPostMessage(
+			chat.TelegramChatId,
+			chat.TelegramThreadId,
+			message,
+		)
+	}
+	telegram.TelegramUpdateTyping(chat.TelegramChatId, false)
+}
 
 // JaccardSimilarity, as known as the Jaccard Index, compares the similarity of sample sets.
 // This doesn't measure similarity between texts, but if regarding a text as bag-of-word,
