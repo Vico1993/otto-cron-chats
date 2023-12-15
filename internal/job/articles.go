@@ -69,7 +69,7 @@ func match(articles []otto.Article) []Topic {
 			matched := false
 
 			for key, match := range matchs {
-				similarity := jaccardSimilarity2(match.Set, set)
+				similarity := jaccardSimilarity(match.Set, set)
 
 				if similarity >= similarityScore {
 					matchs[key].Articles = append(matchs[key].Articles, article)
@@ -99,7 +99,7 @@ func match(articles []otto.Article) []Topic {
 // JaccardSimilarity, as known as the Jaccard Index, compares the similarity of sample sets.
 // This doesn't measure similarity between texts, but if regarding a text as bag-of-word,
 // it can apply.
-func jaccardSimilarity2(s1set, s2set mapset.Set[string]) float64 {
+func jaccardSimilarity(s1set, s2set mapset.Set[string]) float64 {
 	s1ands2 := s1set.Intersect(s2set).Cardinality()
 	s1ors2 := s1set.Union(s2set).Cardinality()
 	return float64(s1ands2) / float64(s1ors2)
