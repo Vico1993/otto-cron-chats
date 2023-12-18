@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/Vico1993/Otto-client v1.3.2
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.5.0
 	github.com/stretchr/testify v1.8.4
 )
 
