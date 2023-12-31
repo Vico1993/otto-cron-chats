@@ -17,7 +17,7 @@ require (
 require (
 	github.com/DavidBelicza/TextRank/v2 v2.1.3
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/deckarep/golang-set/v2 v2.5.0
+	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/go-co-op/gocron v1.36.1
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
